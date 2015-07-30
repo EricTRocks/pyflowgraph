@@ -10,8 +10,6 @@ from graph_view import GraphView
 
 class GraphViewWidget(QtGui.QWidget):
 
-    rigNameChanged = QtCore.Signal()
-
     def __init__(self, parent=None):
 
         # constructors of base classes
