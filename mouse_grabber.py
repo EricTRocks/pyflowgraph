@@ -1,6 +1,6 @@
 
 #
-# Copyright 2015 Horde Software Inc.
+# Copyright 2010-2015
 #
 
 from PySide import QtGui, QtCore
@@ -60,19 +60,8 @@ class MouseGrabber(PortCircle):
                 if mouseOverPortCircle == None:
                     return False
 
-            if self.connectionPointType() != mouseOverPortCircle.connectionPointType():
-                return False
+            return mouseOverPortCircle.canConnectTo(self.__otherPortItem)
 
-            if mouseOverPortCircle.getPort().getDataType() != self.__otherPortItem.getPort().getDataType():
-                return False
-
-            # Check if you're trying to connect to the
-            mouseOverPort = mouseOverPortCircle.getPort()
-            otherPort = self.__otherPortItem.getPort()
-            if mouseOverPort.getNode() == otherPort.getNode():
-                return False
-
-            return True
 
         collidingPortItems = filter(lambda port: canConnect(port), collidingPortItems)
         if len(collidingPortItems) > 0:
@@ -90,6 +79,10 @@ class MouseGrabber(PortCircle):
 
 
     def mouseReleaseEvent(self, event):
+
+        # Destroy the temporary connection.
+        self._graph.removeConnection(self.__connection, emitSignal=False)
+        self.__connection = None
 
         if self.__mouseOverPortCircle is not None:
             try:
@@ -135,8 +128,8 @@ class MouseGrabber(PortCircle):
     def destroy(self):
         self.ungrabMouse()
         scene = self.scene()
-        # Destroy the temporary connection.
-        self._graph.removeConnection(self.__connection, emitSignal=False)
+        if self.__connection is not None:
+            self._graph.removeConnection(self.__connection, emitSignal=False)
         # Destroy the grabber.
         scene.removeItem(self)
         scene.update()

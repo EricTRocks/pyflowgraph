@@ -1,6 +1,6 @@
 
 #
-# Copyright 2015 Horde Software Inc.
+# Copyright 2010-2015
 #
 
 from PySide import QtGui, QtCore

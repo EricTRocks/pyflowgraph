@@ -1,6 +1,6 @@
 
 #
-# Copyright 2015 Horde Software Inc.
+# Copyright 2010-2015
 #
 
 import sys
@@ -10,10 +10,13 @@ from graph_view import GraphView
 
 class GraphViewWidget(QtGui.QWidget):
 
+    rigNameChanged = QtCore.Signal()
+
     def __init__(self, parent=None):
 
         # constructors of base classes
         super(GraphViewWidget, self).__init__(parent)
+        self.openedFile = None
         self.setObjectName('graphViewWidget')
         self.setAttribute(QtCore.Qt.WA_WindowPropagation, True)
 

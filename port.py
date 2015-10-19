@@ -1,6 +1,6 @@
 
 #
-# Copyright 2015 Horde Software Inc.
+# Copyright 2010-2015
 #
 
 import json
@@ -25,18 +25,20 @@ class PortLabel(QtGui.QGraphicsWidget):
         self.__textItem.document().setDefaultTextOption(option)
         self.__textItem.adjustSize()
 
-        self.translate(hOffset, 0)
-        self.adjustSize()
-
-        self.setAcceptHoverEvents(True)
         self.setPreferredSize(self.textSize())
         self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
         self.setWindowFrameMargins(0, 0, 0, 0)
+        self.setHOffset(hOffset)
 
+        self.setAcceptHoverEvents(True)
         self.__mousDownPos = None
 
     def text(self):
         return self.__text
+
+
+    def setHOffset(self, hOffset):
+        self.translate(hOffset, 0)
 
 
     def setColor(self, color):
@@ -53,6 +55,7 @@ class PortLabel(QtGui.QGraphicsWidget):
 
     def getPort(self):
         return self.__port
+
 
     def highlight(self):
         self.setColor(self.__highlightColor)
@@ -73,28 +76,22 @@ class PortLabel(QtGui.QGraphicsWidget):
 
 
     def mousePressEvent(self, event):
-        self.unhighlight()
-
-        if self.__port.inCircle() is not None and self.__port.outCircle() is not None:
-            self.__mousDownPos = self.mapToScene(event.pos())
-
-        elif self.__port.inCircle() is not None:
-            self.__port.inCircle().mousePressEvent(event)
-
-        elif self.__port.outCircle() is not None:
-            self.__port.outCircle().mousePressEvent(event)
+        self.__mousDownPos = self.mapToScene(event.pos())
 
 
     def mouseMoveEvent(self, event):
+        self.unhighlight()
         scenePos = self.mapToScene(event.pos())
 
         # When clicking on an UI port label, it is ambigous which connection point should be activated.
-        # We let the user drag the mous in either direction to select the conneciton point to activate.
+        # We let the user drag the mouse in either direction to select the conneciton point to activate.
         delta = scenePos - self.__mousDownPos
         if delta.x() < 0:
-            self.__port.inCircle().mousePressEvent(event)
+            if self.__port.inCircle() is not None:
+                self.__port.inCircle().mousePressEvent(event)
         else:
-            self.__port.outCircle().mousePressEvent(event)
+            if self.__port.outCircle() is not None:
+                self.__port.outCircle().mousePressEvent(event)
 
     # def paint(self, painter, option, widget):
     #     super(PortLabel, self).paint(painter, option, widget)
@@ -103,6 +100,7 @@ class PortLabel(QtGui.QGraphicsWidget):
 
 
 class PortCircle(QtGui.QGraphicsWidget):
+
     __radius = 4.5
     __diameter = 2 * __radius
 
@@ -158,6 +156,15 @@ class PortCircle(QtGui.QGraphicsWidget):
         self._ellipseItem.setBrush(QtGui.QBrush(self._color))
 
 
+    def setDefaultPen(self, pen):
+        self.__defaultPen = pen
+        self._ellipseItem.setPen(self.__defaultPen)
+
+
+    def setHoverPen(self, pen):
+        self.__hoverPen = pen
+
+
     def highlight(self):
         self._ellipseItem.setBrush(QtGui.QBrush(self._color.lighter()))
         # make the port bigger to highlight it can accept the connection.
@@ -196,6 +203,23 @@ class PortCircle(QtGui.QGraphicsWidget):
 
     def setSupportsOnlySingleConnections(self, value):
         self._supportsOnlySingleConnections = value
+
+    def canConnectTo(self, otherPortCircle):
+
+        if self.connectionPointType() == otherPortCircle.connectionPointType():
+            return False
+
+        if self.getPort().getDataType() != otherPortCircle.getPort().getDataType():
+            return False
+
+        # Check if you're trying to connect to a port on the same node.
+        # TODO: Do propper cycle checking..
+        otherPort = otherPortCircle.getPort()
+        port = self.getPort()
+        if otherPort.getNode() == port.getNode():
+            return False
+
+        return True
 
     def addConnection(self, connection):
         """Adds a connection to the list.
@@ -270,6 +294,27 @@ class PortCircle(QtGui.QGraphicsWidget):
     #     painter.drawRect(self.windowFrameRect())
 
 
+class ItemHolder(QtGui.QGraphicsWidget):
+    """docstring for ItemHolder"""
+    def __init__(self, parent):
+        super(ItemHolder, self).__init__(parent)
+
+        layout = QtGui.QGraphicsLinearLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+
+    def setItem(self, item):
+        item.setParentItem(self)
+        self.layout().addItem(item)
+
+    # def paint(self, painter, option, widget):
+    #     super(ItemHolder, self).paint(painter, option, widget)
+    #     painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 0)))
+    #     painter.drawRect(self.windowFrameRect())
+
+
+
 class BasePort(QtGui.QGraphicsWidget):
 
     _labelColor = QtGui.QColor(25, 25, 25)
@@ -288,6 +333,7 @@ class BasePort(QtGui.QGraphicsWidget):
 
         layout = QtGui.QGraphicsLinearLayout()
         layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self._color = color
@@ -296,20 +342,39 @@ class BasePort(QtGui.QGraphicsWidget):
         self._outCircle = None
         self._labelItem = None
 
+        self._inCircleHolder = ItemHolder(self)
+        self._outCircleHolder = ItemHolder(self)
+        self._labelItemHolder = ItemHolder(self)
+
+        self.layout().addItem(self._inCircleHolder)
+        self.layout().setAlignment(self._inCircleHolder, QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+
+        self.layout().addItem(self._labelItemHolder)
+        self.layout().setAlignment(self._labelItemHolder, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+
+        self.layout().addItem(self._outCircleHolder)
+        self.layout().setAlignment(self._outCircleHolder, QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+
     def getName(self):
         return self._name
+
 
     def getDataType(self):
         return self._dataType
 
+
     def getNode(self):
         return self._node
+
 
     def getGraph(self):
         return self._graph
 
+
     def getColor(self):
         return self._color
+
 
     def setColor(self, color):
         if self._inCircle is not None:
@@ -322,11 +387,41 @@ class BasePort(QtGui.QGraphicsWidget):
     def inCircle(self):
         return self._inCircle
 
+
+    def setInCircle(self, inCircle):
+        self._inCircleHolder.setItem(inCircle)
+        self._inCircle = inCircle
+        self.layout().insertStretch(2, 2)
+        self.updatecontentMargins()
+
     def outCircle(self):
         return self._outCircle
 
+
+    def setOutCircle(self, outCircle):
+        self._outCircleHolder.setItem(outCircle)
+        self._outCircle = outCircle
+        self.layout().insertStretch(1, 2)
+        self.updatecontentMargins()
+
+    def updatecontentMargins(self):
+        left = 0
+        right = 0
+        if self._inCircle is None:
+            left = 30
+        if self._outCircle is None:
+            right = 30
+        self.layout().setContentsMargins(left, 0, right, 0)
+
+
     def labelItem(self):
         return self._labelItem
+
+
+    def setLabelItem(self, labelItem):
+        self._labelItemHolder.setItem(labelItem)
+        self._labelItem = labelItem
+
 
     # ===================
     # Connection Methods
@@ -341,70 +436,32 @@ class BasePort(QtGui.QGraphicsWidget):
 
 
 class InputPort(BasePort):
-    """docstring for InputPort"""
 
     def __init__(self, parent, graph, name, color, dataType):
         super(InputPort, self).__init__(parent, graph, name, color, dataType, 'In')
 
-        labelHOffset = -10
-        circleHOffset = -2
+        self.setInCircle(PortCircle(self, graph, -2, color, 'In'))
+        self.setLabelItem(PortLabel(self, name, -10, self._labelColor, self._labelHighlightColor))
 
-        self._inCircle = PortCircle(self, graph, circleHOffset, color, 'In')
-        self._labelItem = PortLabel(self, name, labelHOffset, self._labelColor, self._labelHighlightColor)
-
-        self.layout().addItem(self._inCircle)
-        self.layout().setAlignment(self._inCircle, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layout().setContentsMargins(0, 0, 30, 0)
-        self.layout().addItem(self._labelItem)
-        self.layout().setAlignment(self._labelItem, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layout().addStretch(2)
-
-        self.__connection = None
 
 
 class OutputPort(BasePort):
-    """docstring for OutputPort"""
 
     def __init__(self, parent, graph, name, color, dataType):
         super(OutputPort, self).__init__(parent, graph, name, color, dataType, 'Out')
 
-        labelHOffset = 10
-        circleHOffset = 2
+        self.setLabelItem(PortLabel(self, self._name, 10, self._labelColor, self._labelHighlightColor))
+        self.setOutCircle(PortCircle(self, graph, 2, color, 'Out'))
 
-        self._labelItem = PortLabel(self, self._name, labelHOffset, self._labelColor, self._labelHighlightColor)
-        self._outCircle = PortCircle(self, graph, circleHOffset, color, 'Out')
-
-        self.layout().addStretch(2)
-        self.layout().setContentsMargins(30, 0, 0, 0)
-        self.layout().addItem(self._labelItem)
-        self.layout().setAlignment(self._labelItem, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layout().addItem(self._outCircle)
-        self.layout().setAlignment(self._outCircle, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
 
 class IOPort(BasePort):
-    """docstring for OutputPort"""
 
     def __init__(self, parent, graph, name, color, dataType):
         super(IOPort, self).__init__(parent, graph, name, color, dataType, 'IO')
 
-        labelHOffset = 0
-        circleHOffset = -2
+        self.setInCircle(PortCircle(self, graph, -2, color, 'In'))
+        self.setLabelItem(PortLabel(self, self._name, 0, self._labelColor, self._labelHighlightColor))
+        self.setOutCircle(PortCircle(self, graph, 2, color, 'Out'))
 
-        self._inCircle = PortCircle(self, graph, circleHOffset, color, 'In')
-
-        self._labelItem = PortLabel(self, name, labelHOffset, self._labelColor, self._labelHighlightColor)
-
-        circleHOffset = 2
-        self._outCircle = PortCircle(self, graph, circleHOffset, color, 'Out')
-
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.layout().addItem(self._inCircle)
-        self.layout().setAlignment(self._inCircle, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layout().addStretch(1)
-        self.layout().addItem(self._labelItem)
-        self.layout().setAlignment(self._labelItem, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layout().addStretch(1)
-        self.layout().addItem(self._outCircle)
-        self.layout().setAlignment(self._outCircle, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 

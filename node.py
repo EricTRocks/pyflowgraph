@@ -1,6 +1,6 @@
 
 #
-# Copyright 2015 Horde Software Inc.
+# Copyright 2010-2015
 #
 
 import json
@@ -193,9 +193,25 @@ class Node(QtGui.QGraphicsWidget):
 
 
     def setGraphPos(self, graphPos):
+        self.prepareConnectionGeometryChange()
         size = self.size()
         self.setTransform(QtGui.QTransform.fromTranslate(graphPos.x()-(size.width()*0.5), graphPos.y()-(size.height()*0.5)), False)
 
+    def translate(self, x, y):
+        self.prepareConnectionGeometryChange()
+        super(Node, self).translate(x, y)
+
+
+    # Prior to moving the node, we need to tell the connections to prepare for a geometry change.
+    # This method must be called preior to moving a node.
+    def prepareConnectionGeometryChange(self):
+        for port in self.__ports:
+            if port.inCircle():
+                for connection in port.inCircle().getConnections():
+                    connection.prepareGeometryChange()
+            if port.outCircle():
+                for connection in port.outCircle().getConnections():
+                    connection.prepareGeometryChange()
 
     #########################
     ## Ports
