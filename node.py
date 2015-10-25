@@ -3,6 +3,7 @@
 # Copyright 2010-2015
 #
 
+import math
 import json
 from PySide import QtGui, QtCore
 from port import InputPort, OutputPort
@@ -197,6 +198,7 @@ class Node(QtGui.QGraphicsWidget):
         size = self.size()
         self.setTransform(QtGui.QTransform.fromTranslate(graphPos.x()-(size.width()*0.5), graphPos.y()-(size.height()*0.5)), False)
 
+
     def translate(self, x, y):
         self.prepareConnectionGeometryChange()
         super(Node, self).translate(x, y)
@@ -301,6 +303,16 @@ class Node(QtGui.QGraphicsWidget):
     def mouseMoveEvent(self, event):
         if self.__dragging:
             newPos = self.mapToScene(event.pos())
+
+            graph = self.getGraph()
+
+            if graph.getSnapToGrid() is True:
+                gridSize = graph.getGridSize()
+
+                newX = math.floor(newPos.x() / gridSize) * gridSize;
+                newY = math.floor(newPos.y() / gridSize) * gridSize;
+                newPos = QtCore.QPointF(newX, newY)
+
             delta = newPos - self._lastDragPoint
             self.__graph.moveSelectedNodes(delta)
             self._lastDragPoint = newPos
@@ -312,7 +324,9 @@ class Node(QtGui.QGraphicsWidget):
     def mouseReleaseEvent(self, event):
         if self.__dragging:
             if self._nodesMoved:
+
                 newPos = self.mapToScene(event.pos())
+
                 delta = newPos - self._mouseDownPoint
                 self.__graph.endMoveSelectedNodes(delta)
 

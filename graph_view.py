@@ -47,6 +47,8 @@ class GraphView(QtGui.QGraphicsView):
 
     _mouseWheelZoomRate = 0.0005
 
+    _snapToGrid = False
+
     def __init__(self, parent=None):
         super(GraphView, self).__init__(parent)
         self.setObjectName('graphView')
@@ -84,6 +86,36 @@ class GraphView(QtGui.QGraphicsView):
 
         self._manipulationMode = 0
         self._selectionRect = None
+
+    def getGridSize(self):
+        """Gets the size of the grid of the graph.
+
+        Returns:
+            int: Size of the grid.
+
+        """
+
+        return self._gridSizeFine
+
+    def getSnapToGrid(self):
+        """Gets the snap to grid value.
+
+        Returns:
+            Boolean: Whether snap to grid is active or not.
+
+        """
+
+        return self._snapToGrid
+
+    def setSnapToGrid(self, snap):
+        """Sets the snap to grid value.
+
+        Args:
+            snap (Boolean): True to snap to grid, false not to.
+
+        """
+
+        self._snapToGrid = snap
 
 
     ################################################
