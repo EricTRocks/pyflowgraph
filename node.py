@@ -293,6 +293,7 @@ class Node(QtGui.QGraphicsWidget):
 
                 self.__dragging = True
                 self._mouseDownPoint = self.mapToScene(event.pos())
+                self._mouseDelta = self._mouseDownPoint - self.getGraphPos()
                 self._lastDragPoint = self._mouseDownPoint
                 self._nodesMoved = False
 
@@ -305,13 +306,18 @@ class Node(QtGui.QGraphicsWidget):
             newPos = self.mapToScene(event.pos())
 
             graph = self.getGraph()
-
             if graph.getSnapToGrid() is True:
                 gridSize = graph.getGridSize()
 
-                newX = math.floor(newPos.x() / gridSize) * gridSize;
-                newY = math.floor(newPos.y() / gridSize) * gridSize;
-                newPos = QtCore.QPointF(newX, newY)
+                newNodePos = newPos - self._mouseDelta
+
+                snapPosX = math.floor(newNodePos.x() / gridSize) * gridSize;
+                snapPosY = math.floor(newNodePos.y() / gridSize) * gridSize;
+                snapPos = QtCore.QPointF(snapPosX, snapPosY)
+
+                newPosOffset = snapPos - newNodePos
+
+                newPos = newPos + newPosOffset
 
             delta = newPos - self._lastDragPoint
             self.__graph.moveSelectedNodes(delta)

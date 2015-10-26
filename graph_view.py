@@ -316,7 +316,7 @@ class GraphView(QtGui.QGraphicsView):
 
     def moveSelectedNodes(self, delta, emitSignal=True):
         for node in self.__selection:
-            node.translate( delta.x(), delta.y())
+            node.translate(delta.x(), delta.y())
 
         if emitSignal:
             self.selectionMoved.emit(self.__selection, delta)
