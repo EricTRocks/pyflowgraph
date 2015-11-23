@@ -43,6 +43,10 @@ class MouseGrabber(PortCircle):
 
     def mouseMoveEvent(self, event):
         scenePos = self.mapToScene(event.pos())
+
+        for connection in self.getConnections():
+            connection.prepareGeometryChange()
+
         self.setTransform(QtGui.QTransform.fromTranslate(scenePos.x(), scenePos.y()), False)
 
         collidingItems = self.collidingItems(QtCore.Qt.IntersectsItemBoundingRect)
@@ -86,7 +90,6 @@ class MouseGrabber(PortCircle):
 
         if self.__mouseOverPortCircle is not None:
             try:
-
                 if self.connectionPointType() == 'In':
                     sourcePortCircle = self.__otherPortItem
                     targetPortCircle = self.__mouseOverPortCircle
@@ -132,5 +135,3 @@ class MouseGrabber(PortCircle):
             self._graph.removeConnection(self.__connection, emitSignal=False)
         # Destroy the grabber.
         scene.removeItem(self)
-        scene.update()
-
