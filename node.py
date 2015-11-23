@@ -1,6 +1,6 @@
 
 #
-# Copyright 2010-2015
+# Copyright 2015 Horde Software Inc.
 #
 
 import math
