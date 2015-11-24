@@ -101,16 +101,19 @@ class Node(QtGui.QGraphicsWidget):
     nameChanged = QtCore.Signal(str, str)
 
     __defaultColor = QtGui.QColor(154, 205, 50, 255)
-    __unselectedPen =  QtGui.QPen(QtGui.QColor(25, 25, 25), 1.6)
-    __selectedPen =  QtGui.QPen(QtGui.QColor(255, 255, 255, 255), 1.6)
-    __linePen =  QtGui.QPen(QtGui.QColor(25, 25, 25, 255), 1.25)
+    __unselectedColor = QtGui.QColor(25, 25, 25)
+    __selectedColor = QtGui.QColor(255, 255, 255, 255)
+
+    __unselectedPen = QtGui.QPen(__unselectedColor, 1.6)
+    __selectedPen = QtGui.QPen(__selectedColor, 1.6)
+    __linePen = QtGui.QPen(QtGui.QColor(25, 25, 25, 255), 1.25)
 
     def __init__(self, graph, name):
         super(Node, self).__init__()
 
         self.__name = name
         self.__graph = graph
-        self.__color = QtGui.QColor(154, 205, 50, 255)
+        self.__color = self.__defaultColor
 
         self.setMinimumWidth(60)
         self.setMinimumHeight(20)
@@ -138,10 +141,11 @@ class Node(QtGui.QGraphicsWidget):
         self.__selected = False
         self.__dragging = False
 
-
+    # =====
+    # Name
+    # =====
     def getName(self):
         return self.__name
-
 
     def setName(self, name):
         if name != self.__name:
@@ -155,16 +159,37 @@ class Node(QtGui.QGraphicsWidget):
             # Update the node so that the size is computed.
             self.adjustSize()
 
-
+    # =======
+    # Colors
+    # =======
     def getColor(self):
         return self.__color
-
 
     def setColor(self, color):
         self.__color = color
         self.update()
 
 
+    def getUnselectedColor(self):
+        return self.__unselectedColor
+
+    def setUnselectedColor(self, color):
+        self.__unselectedColor = color
+        self.__unselectedPen.setColor(self.__unselectedColor)
+        self.update()
+
+
+    def getSelectedColor(self):
+        return self.__selectedColor
+
+    def setSelectedColor(self, color):
+        self.__selectedColor = color
+        self.__selectedPen.setColor(self.__selectedColor)
+        self.update()
+
+    # =============
+    # Misc Methods
+    # =============
     def getGraph(self):
         return self.__graph
 
@@ -173,9 +198,9 @@ class Node(QtGui.QGraphicsWidget):
         return self.__headerItem
 
 
-    #########################
-    ## Selection
-
+    # ==========
+    # Selection
+    # ==========
     def isSelected(self):
         return self.__selected
 
