@@ -400,7 +400,7 @@ class GraphView(QtGui.QGraphicsView):
             self.clearSelection(emitSignal=False)
             self._selectionRect = SelectionRect(graph=self, mouseDownPos=self.mapToScene(event.pos()))
 
-        elif event.button() is QtCore.Qt.MouseButton.MiddleButton:
+        elif event.button() is QtCore.Qt.MouseButton.MidButton:
 
             self.setCursor(QtCore.Qt.OpenHandCursor)
             self._manipulationMode = 2
