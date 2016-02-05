@@ -205,6 +205,7 @@ class Node(QtGui.QGraphicsWidget):
         return self.__selected
 
     def setSelected(self, selected=True):
+        self.setZValue(10.0 if selected else 0.0)
         self.__selected = selected
         self.update()
 
