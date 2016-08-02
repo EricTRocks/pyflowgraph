@@ -4,11 +4,11 @@
 #
 
 import sys
-from PySide import QtGui, QtCore
+from qtpy import QtGui, QtWidgets, QtCore
 
 from graph_view import GraphView
 
-class GraphViewWidget(QtGui.QWidget):
+class GraphViewWidget(QtWidgets.QWidget):
 
     rigNameChanged = QtCore.Signal()
 
@@ -26,19 +26,19 @@ class GraphViewWidget(QtGui.QWidget):
         self.graphView = graphView
 
         # Setup Layout
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.graphView)
         self.setLayout(layout)
 
         #########################
         ## Setup hotkeys for the following actions.
-        deleteShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Delete), self)
+        deleteShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Delete), self)
         deleteShortcut.activated.connect(self.graphView.deleteSelectedNodes)
 
-        frameShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), self)
+        frameShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), self)
         frameShortcut.activated.connect(self.graphView.frameSelectedNodes)
 
-        frameShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_A), self)
+        frameShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_A), self)
         frameShortcut.activated.connect(self.graphView.frameAllNodes)
 
 

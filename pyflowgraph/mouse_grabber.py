@@ -3,7 +3,7 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from PySide import QtGui, QtCore
+from qtpy import QtGui, QtCore
 from port import PortCircle, PortLabel
 from connection import Connection
 

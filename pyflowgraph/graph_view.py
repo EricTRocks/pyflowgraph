@@ -4,7 +4,7 @@
 
 import copy
 
-from PySide import QtGui, QtCore
+from qtpy import QtGui, QtWidgets, QtCore
 
 from node import Node
 from connection import Connection
@@ -12,7 +12,7 @@ from connection import Connection
 from selection_rect import SelectionRect
 
 
-class GraphView(QtGui.QGraphicsView):
+class GraphView(QtWidgets.QGraphicsView):
 
     nodeAdded = QtCore.Signal(Node)
     nodeRemoved = QtCore.Signal(Node)
@@ -78,7 +78,7 @@ class GraphView(QtGui.QGraphicsView):
     ################################################
     ## Graph
     def reset(self):
-        self.setScene(QtGui.QGraphicsScene())
+        self.setScene(QtWidgets.QGraphicsScene())
 
         self.__connections = set()
         self.__nodes = {}
@@ -316,7 +316,7 @@ class GraphView(QtGui.QGraphicsView):
 
     def moveSelectedNodes(self, delta, emitSignal=True):
         for node in self.__selection:
-            node.translate(delta.x(), delta.y())
+            node.moveBy(delta.x(), delta.y())
 
         if emitSignal:
             self.selectionMoved.emit(self.__selection, delta)
@@ -393,14 +393,14 @@ class GraphView(QtGui.QGraphicsView):
 
     def mousePressEvent(self, event):
 
-        if event.button() is QtCore.Qt.MouseButton.LeftButton and self.itemAt(event.pos()) is None:
+        if event.button() == QtCore.Qt.LeftButton and self.itemAt(event.pos()) is None:
             self.beginNodeSelection.emit()
             self._manipulationMode = 1
             self._mouseDownSelection = copy.copy(self.getSelectedNodes())
             self.clearSelection(emitSignal=False)
             self._selectionRect = SelectionRect(graph=self, mouseDownPos=self.mapToScene(event.pos()))
 
-        elif event.button() is QtCore.Qt.MouseButton.MidButton:
+        elif event.button() == QtCore.Qt.MidButton:
 
             self.setCursor(QtCore.Qt.OpenHandCursor)
             self._manipulationMode = 2
@@ -479,7 +479,7 @@ class GraphView(QtGui.QGraphicsView):
         bottomRight = xfo.map(self.rect().bottomRight())
         center = ( topLeft + bottomRight ) * 0.5
 
-        zoomFactor = 1.0 + event.delta() * self._mouseWheelZoomRate
+        zoomFactor = 1.0 + event.angleDelta().y() * self._mouseWheelZoomRate
 
         transform = self.transform()
 
