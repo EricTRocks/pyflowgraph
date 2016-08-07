@@ -3,13 +3,15 @@
 #
 
 import copy
+from six import iteritems
+from past.builtins import basestring
 
-from qtpy import QtGui, QtWidgets, QtCore
+from qtpy import QtGui, QtWidgets, QtCore, PYQT5
 
-from node import Node
-from connection import Connection
+from .node import Node
+from .connection import Connection
 
-from selection_rect import SelectionRect
+from .selection_rect import SelectionRect
 
 
 class GraphView(QtWidgets.QGraphicsView):
@@ -283,7 +285,7 @@ class GraphView(QtWidgets.QGraphicsView):
 
     def frameAllNodes(self):
         allnodes = []
-        for name, node in self.__nodes.iteritems():
+        for name, node in iteritems(self.__nodes):
             allnodes.append(node)
         self.frameNodes(allnodes)
 
@@ -413,7 +415,7 @@ class GraphView(QtWidgets.QGraphicsView):
         if self._manipulationMode == 1:
             dragPoint = self.mapToScene(event.pos())
             self._selectionRect.setDragPoint(dragPoint)
-            for name, node in self.__nodes.iteritems():
+            for name, node in iteritems(self.__nodes):
                 if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                     self.selectNode(node, emitSignal=False)
 
@@ -479,7 +481,10 @@ class GraphView(QtWidgets.QGraphicsView):
         bottomRight = xfo.map(self.rect().bottomRight())
         center = ( topLeft + bottomRight ) * 0.5
 
-        zoomFactor = 1.0 + event.angleDelta().y() * self._mouseWheelZoomRate
+        if PYQT5:
+            zoomFactor = 1.0 + event.angleDelta().y() * self._mouseWheelZoomRate
+        else:
+             zoomFactor = 1.0 + event.delta() * self._mouseWheelZoomRate
 
         transform = self.transform()
 

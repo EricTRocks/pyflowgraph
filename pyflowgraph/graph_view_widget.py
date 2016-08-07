@@ -6,7 +6,7 @@
 import sys
 from qtpy import QtGui, QtWidgets, QtCore
 
-from graph_view import GraphView
+from .graph_view import GraphView
 
 class GraphViewWidget(QtWidgets.QWidget):
 
@@ -48,13 +48,13 @@ class GraphViewWidget(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     widget = GraphViewWidget()
     graph = GraphView(parent=widget)
 
-    from node import Node
-    from port import InputPort, OutputPort, IOPort
+    from .node import Node
+    from .port import InputPort, OutputPort, IOPort
 
     node1 = Node(graph, 'Short')
     node1.addPort(InputPort(node1, graph, 'InPort1', QtGui.QColor(128, 170, 170, 255), 'MyDataX'))

@@ -123,7 +123,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
                 self.__graph.removeConnection(self)
 
-                import mouse_grabber
+                from . import mouse_grabber
                 if delta.x() < 0:
                     mouse_grabber.MouseGrabber(self.__graph, pos, self.__srcPortCircle, 'In')
                 else:

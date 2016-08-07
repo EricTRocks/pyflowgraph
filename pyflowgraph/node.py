@@ -6,7 +6,7 @@
 import math
 import json
 from qtpy import QtGui, QtWidgets, QtCore
-from port import InputPort, OutputPort
+from .port import InputPort, OutputPort
 
 class NodeTitle(QtWidgets.QGraphicsWidget):
 
