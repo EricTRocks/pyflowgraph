@@ -20,9 +20,12 @@ from pyflowgraph.graph_view_widget import GraphViewWidget
 from pyflowgraph.node import Node
 from pyflowgraph.port import InputPort, OutputPort, IOPort
 
-print GraphView
+print( GraphView )
 
-app = QtGui.QApplication(sys.argv)
+app = QtCore.QCoreApplication.instance()
+if not app:
+    app = QtGui.QApplication(sys.argv)
+
 
 widget = GraphViewWidget()
 graph = GraphView(parent=widget)
@@ -30,7 +33,7 @@ graph = GraphView(parent=widget)
 # generate a diamod shape graph.
 totalCount = 0
 def generateNodes(count, offset, depth):
-    for i in range(count):
+    for i in range(int(count)):
         node1 = Node(graph, 'node' + str(depth) + str(i))
         node1.addPort(InputPort(node1, graph, 'InPort', QtGui.QColor(128, 170, 170, 255), 'MyDataX'))
         node1.addPort(OutputPort(node1, graph, 'OutPort', QtGui.QColor(32, 255, 32, 255), 'MyDataX'))
@@ -44,18 +47,18 @@ def generateNodes(count, offset, depth):
     if depth < 6:
         generateNodes( count * 2, offset+160, depth+1)
 
-        for i in range(count):
+        for i in range(int(count)):
             graph.connectPorts('node' + str(depth) + str(i), 'OutPort', 'node' + str(depth+1) + str(i*2), 'InPort')
             graph.connectPorts('node' + str(depth) + str(i), 'OutPort', 'node' + str(depth+1) + str(i*2+1), 'InPort')
     elif depth < 12:
         generateNodes( int(count / 2), offset+160, depth+1)
 
-        for i in range(count/2):
+        for i in range(int(count/2)):
             graph.connectPorts('node' + str(depth) + str(i), 'OutPort', 'node' + str(depth+1) + str(int(i)), 'InPort')
 
 
 generateNodes( 1, 0, 0)
-print "totalCount:" + str(totalCount)
+print( "totalCount:" + str(totalCount) )
 
 widget.setGraphView(graph)
 widget.show()

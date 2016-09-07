@@ -21,7 +21,9 @@ from pyflowgraph.node import Node
 from pyflowgraph.port import InputPort, OutputPort, IOPort
 
 
-app = QtGui.QApplication(sys.argv)
+app = QtCore.QCoreApplication.instance()
+if not app:
+    app = QtGui.QApplication(sys.argv)
 
 widget = GraphViewWidget()
 graph = GraphView(parent=widget)

@@ -3,7 +3,9 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from PySide import QtGui, QtCore
+from   __future__    import unicode_literals
+from   __future__    import absolute_import
+from   Qt            import QtGui, QtCore
 
 
 class Connection(QtGui.QGraphicsPathItem):
@@ -123,7 +125,7 @@ class Connection(QtGui.QGraphicsPathItem):
 
                 self.__graph.removeConnection(self)
 
-                import mouse_grabber
+                from . import mouse_grabber
                 if delta.x() < 0:
                     mouse_grabber.MouseGrabber(self.__graph, pos, self.__srcPortCircle, 'In')
                 else:

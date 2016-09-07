@@ -3,7 +3,9 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from PySide import QtGui, QtCore
+from   __future__    import unicode_literals
+from   __future__    import absolute_import
+from Qt              import QtGui, QtCore
 
 
 class SelectionRect(QtGui.QGraphicsWidget):
