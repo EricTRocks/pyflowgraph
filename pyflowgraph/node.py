@@ -10,7 +10,7 @@ import json
 from Qt    import QtGui, QtCore, QtWidgets
 from .port import InputPort, OutputPort
 
-class NodeTitle(QtGui.QGraphicsWidget):
+class NodeTitle(QtWidgets.QGraphicsWidget):
 
     __color = QtGui.QColor(25, 25, 25)
     __font = QtGui.QFont('Decorative', 14)
@@ -98,7 +98,7 @@ class PortList(QtWidgets.QGraphicsWidget):
     #     painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 0)))
     #     painter.drawRect(self.windowFrameRect())
 
-class Node(QtGui.QGraphicsWidget):
+class Node(QtWidgets.QGraphicsWidget):
 
     nameChanged = QtCore.Signal(str, str)
 

@@ -21,7 +21,7 @@ class PortLabel(QtWidgets.QGraphicsWidget):
         self.__highlightColor = highlightColor
         self.__textItem.setDefaultTextColor(self._labelColor)
         self.__textItem.setFont(self.__font)
-        self.__textItem.translate(0, self.__font.pointSizeF() * -0.5)
+        self.__textItem.transform().translate(0, self.__font.pointSizeF() * -0.5)
         option = self.__textItem.document().defaultTextOption()
         option.setWrapMode(QtGui.QTextOption.NoWrap)
         self.__textItem.document().setDefaultTextOption(option)
@@ -40,7 +40,7 @@ class PortLabel(QtWidgets.QGraphicsWidget):
 
 
     def setHOffset(self, hOffset):
-        self.translate(hOffset, 0)
+        self.transform().translate(hOffset, 0)
 
 
     def setColor(self, color):
@@ -120,12 +120,12 @@ class PortCircle(QtWidgets.QGraphicsWidget):
         self.setPreferredSize(size)
         self.setWindowFrameMargins(0, 0, 0, 0)
 
-        self.translate(self.__radius * hOffset, 0)
+        self.transform().translate(self.__radius * hOffset, 0)
 
         self.__defaultPen = QtGui.QPen(QtGui.QColor(25, 25, 25), 1.0)
         self.__hoverPen = QtGui.QPen(QtGui.QColor(255, 255, 100), 1.5)
 
-        self._ellipseItem = QtGui.QGraphicsEllipseItem(self)
+        self._ellipseItem = QtWidgets.QGraphicsEllipseItem(self)
         self._ellipseItem.setPen(self.__defaultPen)
         self._ellipseItem.setPos(size.width()/2, size.height()/2)
         self._ellipseItem.setRect(

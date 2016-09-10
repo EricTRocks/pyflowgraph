@@ -4,7 +4,7 @@
 #
 
 import sys
-from PySide import QtGui, QtCore
+from Qt import QtGui, QtCore, QtWidgets
 
 # Add the pyflowgraph module to the current environment if it does not already exist
 import imp
@@ -23,7 +23,7 @@ from pyflowgraph.port import InputPort, OutputPort, IOPort
 
 app = QtCore.QCoreApplication.instance()
 if not app:
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
 widget = GraphViewWidget()
 graph = GraphView(parent=widget)

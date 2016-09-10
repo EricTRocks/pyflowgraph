@@ -5,10 +5,10 @@
 
 from   __future__    import unicode_literals
 from   __future__    import absolute_import
-from   Qt            import QtGui, QtCore
+from   Qt            import QtGui, QtCore, QtWidgets
 
 
-class Connection(QtGui.QGraphicsPathItem):
+class Connection(QtWidgets.QGraphicsPathItem):
     __defaultPen = QtGui.QPen(QtGui.QColor(168, 134, 3), 1.5)
 
     def __init__(self, graph, srcPortCircle, dstPortCircle):
@@ -23,14 +23,14 @@ class Connection(QtGui.QGraphicsPathItem):
         self.__connectionColor.setRgbF(*self.__srcPortCircle.getColor().getRgbF())
         self.__connectionColor.setAlpha(125)
 
-        self.__defaultPen = QtGui.QPen(self.__connectionColor, 1.5, s=penStyle)
+        self.__defaultPen = QtGui.QPen(self.__connectionColor, 1.5, style=penStyle)
         self.__defaultPen.setDashPattern([1, 2, 2, 1])
 
         self.__connectionHoverColor = QtGui.QColor(0, 0, 0)
         self.__connectionHoverColor.setRgbF(*self.__srcPortCircle.getColor().getRgbF())
         self.__connectionHoverColor.setAlpha(255)
 
-        self.__hoverPen = QtGui.QPen(self.__connectionHoverColor, 1.5, s=penStyle)
+        self.__hoverPen = QtGui.QPen(self.__connectionHoverColor, 1.5, style=penStyle)
         self.__hoverPen.setDashPattern([1, 2, 2, 1])
 
         self.setPen(self.__defaultPen)
