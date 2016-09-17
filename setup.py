@@ -11,6 +11,7 @@ setup(
 
     keywords         = 'pyflowgraph node graph PySide PySide2 PyQt4 PyQt5',
     install_requires = ['six','Qt.py','PySide'],
+    tests_require    = ['PyQt4','PyQt5','PySide','mock','nose','rednose'],
     packages         = setuptools.find_packages(),
 
     zip_safe         = False,
