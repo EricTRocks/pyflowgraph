@@ -3,11 +3,9 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
-from Qt              import QtGui, QtCore
-from .port           import PortCircle, PortLabel
-from .connection     import Connection
+from PySide import QtGui, QtCore
+from port import PortCircle, PortLabel
+from connection import Connection
 
 class MouseGrabber(PortCircle):
     """docstring for MouseGrabber"""
@@ -28,7 +26,7 @@ class MouseGrabber(PortCircle):
         self.setTransform(QtGui.QTransform.fromTranslate(pos.x(), pos.y()), False)
         self.grabMouse()
 
-        from . import connection
+        import connection
         if self.connectionPointType() == 'Out':
             self.__connection = connection.Connection(self._graph, self, otherPortCircle)
         elif self.connectionPointType() == 'In':
@@ -52,7 +50,7 @@ class MouseGrabber(PortCircle):
         self.setTransform(QtGui.QTransform.fromTranslate(scenePos.x(), scenePos.y()), False)
 
         collidingItems = self.collidingItems(QtCore.Qt.IntersectsItemBoundingRect)
-        collidingPortItems = [ item   for item in collidingItems   if isinstance(item,(PortCircle,PortLabel)) ]
+        collidingPortItems = filter(lambda item: isinstance(item, (PortCircle, PortLabel)), collidingItems)
 
         def canConnect(item):
             if isinstance(item, PortCircle):
@@ -69,7 +67,7 @@ class MouseGrabber(PortCircle):
             return mouseOverPortCircle.canConnectTo(self.__otherPortItem)
 
 
-        collidingPortItems = [port   for port in collidingPortItems   if canConnect(port) ]
+        collidingPortItems = filter(lambda port: canConnect(port), collidingPortItems)
         if len(collidingPortItems) > 0:
 
             if isinstance(collidingPortItems[0], PortCircle):
@@ -99,13 +97,13 @@ class MouseGrabber(PortCircle):
                     sourcePortCircle = self.__mouseOverPortCircle
                     targetPortCircle = self.__otherPortItem
 
-                from .connection import Connection
+                from connection import Connection
                 connection = Connection(self._graph, sourcePortCircle, targetPortCircle)
                 self._graph.addConnection(connection)
                 self._graph.emitEndConnectionManipulationSignal()
 
             except Exception as e:
-                print( "Exception in MouseGrabber.mouseReleaseEvent: " + str(e) )
+                print "Exception in MouseGrabber.mouseReleaseEvent: " + str(e)
 
             self.setMouseOverPortCircle(None)
 

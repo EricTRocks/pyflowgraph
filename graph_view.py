@@ -2,19 +2,17 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
 import copy
 
-from   Qt            import QtGui, QtCore, QtWidgets
-from   six           import string_types
+from PySide import QtGui, QtCore
 
-from .node           import Node
-from .connection     import Connection
-from .selection_rect import SelectionRect
+from node import Node
+from connection import Connection
+
+from selection_rect import SelectionRect
 
 
-class GraphView(QtWidgets.QGraphicsView):
+class GraphView(QtGui.QGraphicsView):
 
     nodeAdded = QtCore.Signal(Node)
     nodeRemoved = QtCore.Signal(Node)
@@ -80,7 +78,7 @@ class GraphView(QtWidgets.QGraphicsView):
     ################################################
     ## Graph
     def reset(self):
-        self.setScene(QtWidgets.QGraphicsScene())
+        self.setScene(QtGui.QGraphicsScene())
 
         self.__connections = set()
         self.__nodes = {}
@@ -285,7 +283,7 @@ class GraphView(QtWidgets.QGraphicsView):
 
     def frameAllNodes(self):
         allnodes = []
-        for name, node in self.__nodes.items():
+        for name, node in self.__nodes.iteritems():
             allnodes.append(node)
         self.frameNodes(allnodes)
 
@@ -359,7 +357,7 @@ class GraphView(QtWidgets.QGraphicsView):
 
         if isinstance(srcNode, Node):
             sourceNode = srcNode
-        elif isinstance(srcNode, string_types):
+        elif isinstance(srcNode, basestring):
             sourceNode = self.getNode(srcNode)
             if not sourceNode:
                 raise Exception("Node not found:" + str(srcNode))
@@ -374,7 +372,7 @@ class GraphView(QtWidgets.QGraphicsView):
 
         if isinstance(tgtNode, Node):
             targetNode = tgtNode
-        elif isinstance(tgtNode, string_types):
+        elif isinstance(tgtNode, basestring):
             targetNode = self.getNode(tgtNode)
             if not targetNode:
                 raise Exception("Node not found:" + str(tgtNode))
@@ -415,7 +413,7 @@ class GraphView(QtWidgets.QGraphicsView):
         if self._manipulationMode == 1:
             dragPoint = self.mapToScene(event.pos())
             self._selectionRect.setDragPoint(dragPoint)
-            for name, node in self.__nodes.items():
+            for name, node in self.__nodes.iteritems():
                 if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                     self.selectNode(node, emitSignal=False)
 

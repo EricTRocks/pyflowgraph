@@ -3,32 +3,30 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
 import json
-from Qt              import QtGui, QtCore, QtWidgets
+from PySide import QtGui, QtCore
 
 
-class PortLabel(QtWidgets.QGraphicsWidget):
+class PortLabel(QtGui.QGraphicsWidget):
     __font = QtGui.QFont('Decorative', 12)
 
     def __init__(self, port, text, hOffset, color, highlightColor):
         super(PortLabel, self).__init__(port)
         self.__port = port
         self.__text = text
-        self.__textItem = QtWidgets.QGraphicsTextItem(text, self)
+        self.__textItem = QtGui.QGraphicsTextItem(text, self)
         self._labelColor = color
         self.__highlightColor = highlightColor
         self.__textItem.setDefaultTextColor(self._labelColor)
         self.__textItem.setFont(self.__font)
-        self.__textItem.transform().translate(0, self.__font.pointSizeF() * -0.5)
+        self.__textItem.translate(0, self.__font.pointSizeF() * -0.5)
         option = self.__textItem.document().defaultTextOption()
         option.setWrapMode(QtGui.QTextOption.NoWrap)
         self.__textItem.document().setDefaultTextOption(option)
         self.__textItem.adjustSize()
 
         self.setPreferredSize(self.textSize())
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
         self.setWindowFrameMargins(0, 0, 0, 0)
         self.setHOffset(hOffset)
 
@@ -40,7 +38,7 @@ class PortLabel(QtWidgets.QGraphicsWidget):
 
 
     def setHOffset(self, hOffset):
-        self.transform().translate(hOffset, 0)
+        self.translate(hOffset, 0)
 
 
     def setColor(self, color):
@@ -101,7 +99,7 @@ class PortLabel(QtWidgets.QGraphicsWidget):
     #     painter.drawRect(self.windowFrameRect())
 
 
-class PortCircle(QtWidgets.QGraphicsWidget):
+class PortCircle(QtGui.QGraphicsWidget):
 
     __radius = 4.5
     __diameter = 2 * __radius
@@ -115,17 +113,17 @@ class PortCircle(QtWidgets.QGraphicsWidget):
         self.__connections = set()
         self._supportsOnlySingleConnections = connectionPointType == 'In'
 
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
         size = QtCore.QSizeF(self.__diameter, self.__diameter)
         self.setPreferredSize(size)
         self.setWindowFrameMargins(0, 0, 0, 0)
 
-        self.transform().translate(self.__radius * hOffset, 0)
+        self.translate(self.__radius * hOffset, 0)
 
         self.__defaultPen = QtGui.QPen(QtGui.QColor(25, 25, 25), 1.0)
         self.__hoverPen = QtGui.QPen(QtGui.QColor(255, 255, 100), 1.5)
 
-        self._ellipseItem = QtWidgets.QGraphicsEllipseItem(self)
+        self._ellipseItem = QtGui.QGraphicsEllipseItem(self)
         self._ellipseItem.setPen(self.__defaultPen)
         self._ellipseItem.setPos(size.width()/2, size.height()/2)
         self._ellipseItem.setRect(
@@ -283,7 +281,7 @@ class PortCircle(QtWidgets.QGraphicsWidget):
 
         scenePos = self.mapToScene(event.pos())
 
-        from .mouse_grabber import MouseGrabber
+        from mouse_grabber import MouseGrabber
         if self.isInConnectionPoint():
             MouseGrabber(self._graph, scenePos, self, 'Out')
         elif self.isOutConnectionPoint():
@@ -296,12 +294,12 @@ class PortCircle(QtWidgets.QGraphicsWidget):
     #     painter.drawRect(self.windowFrameRect())
 
 
-class ItemHolder(QtWidgets.QGraphicsWidget):
+class ItemHolder(QtGui.QGraphicsWidget):
     """docstring for ItemHolder"""
     def __init__(self, parent):
         super(ItemHolder, self).__init__(parent)
 
-        layout = QtWidgets.QGraphicsLinearLayout()
+        layout = QtGui.QGraphicsLinearLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
@@ -317,7 +315,7 @@ class ItemHolder(QtWidgets.QGraphicsWidget):
 
 
 
-class BasePort(QtWidgets.QGraphicsWidget):
+class BasePort(QtGui.QGraphicsWidget):
 
     _labelColor = QtGui.QColor(25, 25, 25)
     _labelHighlightColor = QtGui.QColor(225, 225, 225, 255)
@@ -331,9 +329,9 @@ class BasePort(QtWidgets.QGraphicsWidget):
         self._dataType = dataType
         self._connectionPointType = connectionPointType
 
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed))
 
-        layout = QtWidgets.QGraphicsLinearLayout()
+        layout = QtGui.QGraphicsLinearLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)

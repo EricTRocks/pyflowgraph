@@ -3,14 +3,12 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
 import sys
-from Qt              import QtGui, QtCore, QtWidgets
+from PySide import QtGui, QtCore
 
-from .graph_view     import GraphView
+from graph_view import GraphView
 
-class GraphViewWidget(QtWidgets.QWidget):
+class GraphViewWidget(QtGui.QWidget):
 
     rigNameChanged = QtCore.Signal()
 
@@ -28,19 +26,19 @@ class GraphViewWidget(QtWidgets.QWidget):
         self.graphView = graphView
 
         # Setup Layout
-        layout = QtWidgets.QVBoxLayout(self)
+        layout = QtGui.QVBoxLayout(self)
         layout.addWidget(self.graphView)
         self.setLayout(layout)
 
         #########################
         ## Setup hotkeys for the following actions.
-        deleteShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Delete), self)
+        deleteShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Delete), self)
         deleteShortcut.activated.connect(self.graphView.deleteSelectedNodes)
 
-        frameShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), self)
+        frameShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), self)
         frameShortcut.activated.connect(self.graphView.frameSelectedNodes)
 
-        frameShortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_A), self)
+        frameShortcut = QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_A), self)
         frameShortcut.activated.connect(self.graphView.frameAllNodes)
 
 
@@ -55,8 +53,8 @@ if __name__ == "__main__":
     widget = GraphViewWidget()
     graph = GraphView(parent=widget)
 
-    from .node import Node
-    from .port import InputPort, OutputPort, IOPort
+    from node import Node
+    from port import InputPort, OutputPort, IOPort
 
     node1 = Node(graph, 'Short')
     node1.addPort(InputPort(node1, graph, 'InPort1', QtGui.QColor(128, 170, 170, 255), 'MyDataX'))

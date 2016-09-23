@@ -3,12 +3,10 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
-from Qt              import QtGui, QtCore, QtWidgets
+from PySide import QtGui, QtCore
 
 
-class SelectionRect(QtWidgets.QGraphicsWidget):
+class SelectionRect(QtGui.QGraphicsWidget):
     __backgroundColor = QtGui.QColor(100, 100, 100, 50)
     __pen =  QtGui.QPen(QtGui.QColor(25, 25, 25), 1.0,  QtCore.Qt.DashLine)
 

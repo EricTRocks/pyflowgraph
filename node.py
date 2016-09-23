@@ -3,14 +3,12 @@
 # Copyright 2015 Horde Software Inc.
 #
 
-from   __future__    import unicode_literals
-from   __future__    import absolute_import
 import math
 import json
-from Qt    import QtGui, QtCore, QtWidgets
-from .port import InputPort, OutputPort
+from PySide import QtGui, QtCore
+from port import InputPort, OutputPort
 
-class NodeTitle(QtWidgets.QGraphicsWidget):
+class NodeTitle(QtGui.QGraphicsWidget):
 
     __color = QtGui.QColor(25, 25, 25)
     __font = QtGui.QFont('Decorative', 14)
@@ -20,9 +18,9 @@ class NodeTitle(QtWidgets.QGraphicsWidget):
     def __init__(self, text, parent=None):
         super(NodeTitle, self).__init__(parent)
 
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
 
-        self.__textItem = QtWidgets.QGraphicsTextItem(text, self)
+        self.__textItem = QtGui.QGraphicsTextItem(text, self)
         self.__textItem.setDefaultTextColor(self.__color)
         self.__textItem.setFont(self.__font)
         self.__textItem.setPos(0, -2)
@@ -50,14 +48,14 @@ class NodeTitle(QtWidgets.QGraphicsWidget):
     #     painter.drawRect(self.windowFrameRect())
 
 
-class NodeHeader(QtWidgets.QGraphicsWidget):
+class NodeHeader(QtGui.QGraphicsWidget):
 
     def __init__(self, text, parent=None):
         super(NodeHeader, self).__init__(parent)
 
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
 
-        layout = QtWidgets.QGraphicsLinearLayout()
+        layout = QtGui.QGraphicsLinearLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(3)
         layout.setOrientation(QtCore.Qt.Horizontal)
@@ -77,10 +75,10 @@ class NodeHeader(QtWidgets.QGraphicsWidget):
     #     painter.drawRect(self.windowFrameRect())
 
 
-class PortList(QtWidgets.QGraphicsWidget):
+class PortList(QtGui.QGraphicsWidget):
     def __init__(self, parent):
         super(PortList, self).__init__(parent)
-        layout = QtWidgets.QGraphicsLinearLayout()
+        layout = QtGui.QGraphicsLinearLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(7)
         layout.setOrientation(QtCore.Qt.Vertical)
@@ -98,7 +96,7 @@ class PortList(QtWidgets.QGraphicsWidget):
     #     painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 0)))
     #     painter.drawRect(self.windowFrameRect())
 
-class Node(QtWidgets.QGraphicsWidget):
+class Node(QtGui.QGraphicsWidget):
 
     nameChanged = QtCore.Signal(str, str)
 
@@ -119,9 +117,9 @@ class Node(QtWidgets.QGraphicsWidget):
 
         self.setMinimumWidth(60)
         self.setMinimumHeight(20)
-        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
 
-        layout = QtWidgets.QGraphicsLinearLayout()
+        layout = QtGui.QGraphicsLinearLayout()
         layout.setContentsMargins(5, 0, 5, 7)
         layout.setSpacing(7)
         layout.setOrientation(QtCore.Qt.Vertical)
