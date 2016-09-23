@@ -4,7 +4,7 @@
 #
 
 import sys
-from PySide import QtGui, QtCore
+from qtpy import QtGui, QtWidgets, QtCore
 
 # Add the pyflowgraph module to the current environment if it does not already exist
 import imp
@@ -20,9 +20,9 @@ from pyflowgraph.graph_view_widget import GraphViewWidget
 from pyflowgraph.node import Node
 from pyflowgraph.port import InputPort, OutputPort, IOPort
 
-print GraphView
+print(GraphView)
 
-app = QtGui.QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 
 widget = GraphViewWidget()
 graph = GraphView(parent=widget)
@@ -50,12 +50,12 @@ def generateNodes(count, offset, depth):
     elif depth < 12:
         generateNodes( int(count / 2), offset+160, depth+1)
 
-        for i in range(count/2):
+        for i in range(count//2):
             graph.connectPorts('node' + str(depth) + str(i), 'OutPort', 'node' + str(depth+1) + str(int(i)), 'InPort')
 
 
 generateNodes( 1, 0, 0)
-print "totalCount:" + str(totalCount)
+print("totalCount:" + str(totalCount))
 
 widget.setGraphView(graph)
 widget.show()
