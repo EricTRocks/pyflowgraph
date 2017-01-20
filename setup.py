@@ -6,9 +6,9 @@ setup(name='pyflowgraph',
       version='0.1',
       description='An interactive data flow graph editor',
       url='https://github.com/EricTRocks/pyflowgraph',
-      author='',
-      author_email='',
-      license='MIT',
+      author='Eric Thivierge',
+      author_email='ethivierge@gmail.com',
+      license='BSD 3-clause "New" or "Revised" License',
       classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -21,7 +21,7 @@ setup(name='pyflowgraph',
         'Topic :: Software Development :: User Interfaces',
 
         # Pick your license as you wish (should match "license" above)
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: BSD License',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
@@ -32,6 +32,6 @@ setup(name='pyflowgraph',
         'Programming Language :: Python :: 3.5',
       ],
       packages=['pyflowgraph'],
-      install_requires=['qtpy', 'six', 'future'],
+      install_requires=['PySide==1.2.2', 'qtpy', 'six', 'future'],
       zip_safe=False)
 
