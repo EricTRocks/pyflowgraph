@@ -9,6 +9,7 @@ from qtpy import QtGui, QtWidgets, QtCore
 
 class PortLabel(QtWidgets.QGraphicsWidget):
     __font = QtGui.QFont('Decorative', 12)
+    __fontMetrics = QtGui.QFontMetrics(__font)
 
     def __init__(self, port, text, hOffset, color, highlightColor):
         super(PortLabel, self).__init__(port)
@@ -23,6 +24,7 @@ class PortLabel(QtWidgets.QGraphicsWidget):
         option = self.__textItem.document().defaultTextOption()
         option.setWrapMode(QtGui.QTextOption.NoWrap)
         self.__textItem.document().setDefaultTextOption(option)
+        self.__textItem.document().setDocumentMargin(0)
         self.__textItem.adjustSize()
 
         self.setPreferredSize(self.textSize())
@@ -48,8 +50,8 @@ class PortLabel(QtWidgets.QGraphicsWidget):
 
     def textSize(self):
         return QtCore.QSizeF(
-            self.__textItem.textWidth(),
-            self.__font.pointSizeF()
+            self.__fontMetrics.width(self.__text),
+            self.__fontMetrics.height()
             )
 
 
