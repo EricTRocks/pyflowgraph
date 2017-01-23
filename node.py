@@ -271,7 +271,7 @@ class Node(QtWidgets.QGraphicsWidget):
         painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 0, 0), 0))
 
         roundingY = 10
-        roundingX = rect.height() / rect.width() * roundingY
+        roundingX = 10
 
         painter.drawRoundedRect(rect, roundingX, roundingY)
 
@@ -280,11 +280,8 @@ class Node(QtWidgets.QGraphicsWidget):
 
         painter.setBrush(self.__color.darker(125))
         roundingY = rect.width() * roundingX / titleHeight
-        painter.drawRoundedRect(0, 0, rect.width(), titleHeight, roundingX, roundingY)
+        painter.drawRoundedRect(0, 0, rect.width(), titleHeight, roundingX, roundingY, QtCore.Qt.AbsoluteSize)
         painter.drawRect(0, titleHeight * 0.5 + 2, rect.width(), titleHeight * 0.5)
-
-        # painter.setPen(self.__linePen)
-        # painter.drawLine(QtCore.QPoint(0, titleHeight), QtCore.QPoint(rect.width(), titleHeight))
 
         painter.setBrush(QtGui.QColor(0, 0, 0, 0))
         if self.__selected:
@@ -293,9 +290,9 @@ class Node(QtWidgets.QGraphicsWidget):
             painter.setPen(self.__unselectedPen)
 
         roundingY = 10
-        roundingX = rect.height() / rect.width() * roundingY
+        roundingX = 10
 
-        painter.drawRoundedRect(rect, roundingX, roundingY)
+        painter.drawRoundedRect(rect, roundingX, roundingY, QtCore.Qt.AbsoluteSize)
 
 
     #########################
