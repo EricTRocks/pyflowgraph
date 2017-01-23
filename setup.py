@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
+
+long_description = """An interactive data flow graph editor."""
 
 setup(name='pyflowgraph',
-      version='0.1',
+      version='0.0.1',
       description='An interactive data flow graph editor',
+      long_description=long_description,
       url='https://github.com/EricTRocks/pyflowgraph',
       author='Eric Thivierge',
       author_email='ethivierge@gmail.com',
@@ -31,7 +34,8 @@ setup(name='pyflowgraph',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
       ],
-      packages=['pyflowgraph'],
-      install_requires=['PySide==1.2.2', 'qtpy', 'six', 'future'],
+      keywords='data flow graph',
+      packages=find_packages(exclude=['tests']),
+      install_requires=['PySide>=1.2.2,<1.2.4','qtpy','six','future'],
       zip_safe=False)
 
