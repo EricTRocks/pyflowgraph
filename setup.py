@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 long_description = """An interactive data flow graph editor."""
 
 setup(name='pyflowgraph',
-      version='0.0.2',
+      version='0.0.3',
       description='An interactive data flow graph editor',
       long_description=long_description,
       url='https://github.com/EricTRocks/pyflowgraph',
