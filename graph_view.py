@@ -4,7 +4,7 @@
 #
 
 import copy
-from six import iteritems
+from future.utils import iteritems
 from past.builtins import basestring
 
 from qtpy import QtGui, QtWidgets, QtCore, PYQT5
@@ -433,7 +433,7 @@ class GraphView(QtWidgets.QGraphicsView):
             # This logic allows users to use ctrl and shift with rectangle
             # select to add / remove nodes.
             if modifiers == QtCore.Qt.ControlModifier:
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
 
                     if node in self._mouseDownSelection:
                         if node.isSelected() and self._selectionRect.collidesWithItem(node):
@@ -448,7 +448,7 @@ class GraphView(QtWidgets.QGraphicsView):
                                 self.deselectNode(node, emitSignal=False)
 
             elif modifiers == QtCore.Qt.ShiftModifier:
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
                     if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                         self.selectNode(node, emitSignal=False)
                     elif node.isSelected() and not self._selectionRect.collidesWithItem(node):
@@ -458,7 +458,7 @@ class GraphView(QtWidgets.QGraphicsView):
             else:
                 self.clearSelection(emitSignal=False)
 
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
                     if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                         self.selectNode(node, emitSignal=False)
                     elif node.isSelected() and not self._selectionRect.collidesWithItem(node):
