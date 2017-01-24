@@ -402,19 +402,19 @@ class GraphView(QtWidgets.QGraphicsView):
 
     def mousePressEvent(self, event):
 
-        if event.button() is QtCore.Qt.LeftButton and self.itemAt(event.pos()) is None:
+        if event.button() == QtCore.Qt.LeftButton and self.itemAt(event.pos()) is None:
             self.beginNodeSelection.emit()
             self._manipulationMode = MANIP_MODE_SELECT
             self._mouseDownSelection = copy.copy(self.getSelectedNodes())
             self.clearSelection(emitSignal=False)
             self._selectionRect = SelectionRect(graph=self, mouseDownPos=self.mapToScene(event.pos()))
 
-        elif event.button() is QtCore.Qt.MouseButton.MiddleButton:
+        elif event.button() == QtCore.Qt.MidButton or event.button() == QtCore.Qt.MiddleButton:
             self.setCursor(QtCore.Qt.OpenHandCursor)
             self._manipulationMode = MANIP_MODE_PAN
             self._lastPanPoint = self.mapToScene(event.pos())
 
-        elif event.button() is QtCore.Qt.MouseButton.RightButton:
+        elif event.button() == QtCore.Qt.RightButton:
             self.setCursor(QtCore.Qt.SizeHorCursor)
             self._manipulationMode = MANIP_MODE_ZOOM
             self._lastMousePos = event.pos()
