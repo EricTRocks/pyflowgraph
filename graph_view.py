@@ -417,8 +417,12 @@ class GraphView(QtWidgets.QGraphicsView):
         elif event.button() is QtCore.Qt.MouseButton.RightButton:
             self.setCursor(QtCore.Qt.SizeHorCursor)
             self._manipulationMode = MANIP_MODE_ZOOM
-            self._lastZoomPoint = self.mapToScene(event.pos())
+            self._lastMousePos = event.pos()
             self._lastTransform = QtGui.QTransform(self.transform())
+            self._lastSceneRect = self.sceneRect()
+            self._lastSceneCenter = self._lastSceneRect.center()
+            self._lastScenePos = self.mapToScene(event.pos())
+            self._lastOffsetFromSceneCenter = self._lastScenePos - self._lastSceneCenter
 
         else:
             super(GraphView, self).mousePressEvent(event)
