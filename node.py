@@ -227,8 +227,7 @@ class Node(QtWidgets.QGraphicsWidget):
 
     def translate(self, x, y):
         self.prepareConnectionGeometryChange()
-        currPos = self.pos()
-        super(Node, self).setPos(currPos.x() + x, currPos.y() + y)
+        super(Node, self).moveBy(x, y)
 
 
     # Prior to moving the node, we need to tell the connections to prepare for a geometry change.
