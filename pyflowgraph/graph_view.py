@@ -4,7 +4,7 @@
 #
 
 import copy
-from six import iteritems
+from future.utils import iteritems
 from past.builtins import basestring
 
 from qtpy import QtGui, QtWidgets, QtCore, PYQT5
@@ -402,23 +402,27 @@ class GraphView(QtWidgets.QGraphicsView):
 
     def mousePressEvent(self, event):
 
-        if event.button() is QtCore.Qt.LeftButton and self.itemAt(event.pos()) is None:
+        if event.button() == QtCore.Qt.LeftButton and self.itemAt(event.pos()) is None:
             self.beginNodeSelection.emit()
             self._manipulationMode = MANIP_MODE_SELECT
             self._mouseDownSelection = copy.copy(self.getSelectedNodes())
             self.clearSelection(emitSignal=False)
             self._selectionRect = SelectionRect(graph=self, mouseDownPos=self.mapToScene(event.pos()))
 
-        elif event.button() is QtCore.Qt.MouseButton.MiddleButton:
+        elif event.button() == QtCore.Qt.MidButton or event.button() == QtCore.Qt.MiddleButton:
             self.setCursor(QtCore.Qt.OpenHandCursor)
             self._manipulationMode = MANIP_MODE_PAN
             self._lastPanPoint = self.mapToScene(event.pos())
 
-        elif event.button() is QtCore.Qt.MouseButton.RightButton:
+        elif event.button() == QtCore.Qt.RightButton:
             self.setCursor(QtCore.Qt.SizeHorCursor)
             self._manipulationMode = MANIP_MODE_ZOOM
-            self._lastZoomPoint = self.mapToScene(event.pos())
+            self._lastMousePos = event.pos()
             self._lastTransform = QtGui.QTransform(self.transform())
+            self._lastSceneRect = self.sceneRect()
+            self._lastSceneCenter = self._lastSceneRect.center()
+            self._lastScenePos = self.mapToScene(event.pos())
+            self._lastOffsetFromSceneCenter = self._lastScenePos - self._lastSceneCenter
 
         else:
             super(GraphView, self).mousePressEvent(event)
@@ -433,7 +437,7 @@ class GraphView(QtWidgets.QGraphicsView):
             # This logic allows users to use ctrl and shift with rectangle
             # select to add / remove nodes.
             if modifiers == QtCore.Qt.ControlModifier:
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
 
                     if node in self._mouseDownSelection:
                         if node.isSelected() and self._selectionRect.collidesWithItem(node):
@@ -448,7 +452,7 @@ class GraphView(QtWidgets.QGraphicsView):
                                 self.deselectNode(node, emitSignal=False)
 
             elif modifiers == QtCore.Qt.ShiftModifier:
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
                     if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                         self.selectNode(node, emitSignal=False)
                     elif node.isSelected() and not self._selectionRect.collidesWithItem(node):
@@ -458,7 +462,7 @@ class GraphView(QtWidgets.QGraphicsView):
             else:
                 self.clearSelection(emitSignal=False)
 
-                for name, node in self.__nodes.iteritems():
+                for name, node in iteritems(self.__nodes):
                     if not node.isSelected() and self._selectionRect.collidesWithItem(node):
                         self.selectNode(node, emitSignal=False)
                     elif node.isSelected() and not self._selectionRect.collidesWithItem(node):
